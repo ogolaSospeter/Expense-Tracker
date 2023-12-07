@@ -1,16 +1,17 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
 }
 
 android {
     namespace = "developer.selfcoderspackage.expensetracker"
-    compileSdk = 34
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "developer.selfcoderspackage.expensetracker"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -59,7 +60,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material:1.5.4")
     implementation("com.google.android.material:material:1.10.0")
+    implementation("com.google.firebase:firebase-firestore:24.9.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -73,5 +76,9 @@ dependencies {
 
     //The coil dependency
     implementation("io.coil-kt:coil-compose:2.4.0")
+
+
+
+
 
 }
