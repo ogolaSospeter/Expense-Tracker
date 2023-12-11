@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import developer.selfcoderspackage.expensetracker.model.dataClasses.Expenses
@@ -36,6 +37,11 @@ fun Debits(navController: NavHostController) {
     var sortedexpensesList by remember { mutableStateOf(emptyList<Expenses>()) }
     var expenses by remember { mutableStateOf(emptyList<Expenses>()) }
     val viewmodel = FirestoreViewModel()
+    val context = LocalContext.current
+
+    LaunchedEffect(context) {
+        expenses = viewmodel.getExpensesFromFirestore()
+    }
 
     LaunchedEffect(sortOrder) {
         // Fetch expenses when sortOrder changes
@@ -71,9 +77,9 @@ fun Debits(navController: NavHostController) {
                 )
         },
         content = {
-
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier
+                    .padding(16.dp)
                     .verticalScroll(ScrollState(0), true)
             ) {
                 sortedexpensesList.forEach { item ->

@@ -34,6 +34,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
@@ -47,10 +48,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -67,6 +71,7 @@ import coil.compose.AsyncImage
 import developer.selfcoderspackage.expensetracker.R
 import developer.selfcoderspackage.expensetracker.model.Screens
 import developer.selfcoderspackage.expensetracker.model.variables.drawerItems
+import developer.selfcoderspackage.expensetracker.viewmodel.FirestoreViewModel
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -76,6 +81,23 @@ fun HomePage(navController: NavHostController) {
     var drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val openDialog = remember { mutableStateOf(false) }
+    val viewModel = FirestoreViewModel()
+    var income by remember { mutableStateOf(0) }
+    var expense by remember { mutableStateOf(0) }
+    val context = LocalContext.current
+
+    LaunchedEffect(context) {
+        val allExpenses = viewModel.getExpensesFromFirestore()
+
+        income = allExpenses
+            .filter { it.type == "credit" }
+            .sumBy { it.amount.toInt() }
+
+        expense = allExpenses
+            .filter { it.type == "debit" }
+            .sumBy { it.amount.toInt() }
+
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -111,7 +133,6 @@ fun HomePage(navController: NavHostController) {
                                     modifier = Modifier
                                         .clip(CircleShape)
                                         .size(40.dp)
-                                        .offset(10.dp)
                                     )
 //                                Icon(Icons.Filled.Person, contentDescription = "Search")
                             }
@@ -223,7 +244,31 @@ fun HomePage(navController: NavHostController) {
 
                                 }
                             }
+                           Row(
+                               modifier = Modifier
+                                   .fillMaxWidth()
+                                   .padding(2.dp),
+                               horizontalArrangement = Arrangement.spacedBy(5.dp)
+                           ){
+                               FilledIconButton(
+                                   onClick = { /*TODO*/ },
+                                   enabled = false,
+                                   shape = RoundedCornerShape(1.dp),
+                                   modifier = Modifier.width(200.dp)) {
+                                   Text(text = "Total Income: \n\tKshs. $income ")
+                               }
+                               FilledIconButton(
+                                   onClick = { /*TODO*/ },
+                                   enabled = false,
+                                   shape = RoundedCornerShape(1.dp),
+                                   modifier = Modifier.width(200.dp)) {
+                                   Text(text = "Total Expenses: \n\tKshs.$expense ")
+                               }
+
+                           }
+                           Spacer(modifier = Modifier.height(4.dp))
                 }
+
                         Column(
                             modifier = Modifier
 //                                .padding(innerPadding)
@@ -340,18 +385,7 @@ fun DrawerContent(navController: NavHostController) {
             },
                 modifier = Modifier
                     .width(250.dp)
-                    .height(50.dp),
-//                colors  = NavigationDrawerItemDefaults.colors(
-//                    Color(0xFF059B86),
-//                    Color.White,
-//                    Color.White,
-//                    Color(0xFF059B86),
-//                    Color.White,
-//                    Color(0xFF059B86),
-//                    Color.White,
-//                    Color(0xFF059B86)
-//
-//                    ),
+                    .height(50.dp)
 
             )
 

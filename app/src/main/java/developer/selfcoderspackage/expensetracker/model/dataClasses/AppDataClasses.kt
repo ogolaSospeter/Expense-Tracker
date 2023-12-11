@@ -14,7 +14,7 @@ data class Expenses(
     val id: Timestamp,
     val name: String,
     val amount: Number,
-    val type: String
+    var type: String
 )
 
 data class Credits(

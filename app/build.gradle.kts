@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "developer.selfcoderspackage.expensetracker"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "developer.selfcoderspackage.expensetracker"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -76,6 +76,8 @@ dependencies {
 
     //The coil dependency
     implementation("io.coil-kt:coil-compose:2.4.0")
+
+
 
 
 

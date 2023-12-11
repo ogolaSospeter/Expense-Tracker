@@ -33,6 +33,7 @@ import developer.selfcoderspackage.expensetracker.viewmodel.FirestoreViewModel
 // Function to retrieve user data from Firestore
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserList(navController:NavHostController) {
     var users by remember { mutableStateOf(emptyList<User>()) }
@@ -44,8 +45,27 @@ fun UserList(navController:NavHostController) {
         users = viewmodel.getUsersFromFirestore()
         expenses = viewmodel.getExpensesFromFirestore()
     }
-
-    LazyColumn {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Column {
+                        Text(text = "Data Items")
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.navigateUp()
+                    }) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
+        },
+        content = {innerPadding->
+    LazyColumn(
+        modifier = Modifier.padding(innerPadding)
+    ) {
         items(users) { user ->
             UserListItem(user)
         }
@@ -53,6 +73,8 @@ fun UserList(navController:NavHostController) {
             ExpenseListItem(expense)
         }
     }
+}
+)
 }
 
 
@@ -87,24 +109,6 @@ fun ExpenseListItem(expense: Expenses) {
 
     // Display user information in a Compose card
     Column{
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Column {
-                            Text(text = "Data Items")
-                        }
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = {
-                            navController.navigateUp()
-                        }) {
-                            Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
-                        }
-                    }
-                )
-            },
-            content = {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -140,8 +144,6 @@ fun ExpenseListItem(expense: Expenses) {
     }
             }
 
-        )
-    }
 }
 
 @Composable
